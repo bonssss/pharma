@@ -1,9 +1,10 @@
 const express = require('express');
 const Medicine = require('../models/medicineModel');
+const { protect, admin, pharmacist } = require('../middleware/roleMiddleware');
 
 const router = express.Router();
 
-router.get('/', async (req, res) => {
+router.get('/', protect, async (req, res) => {
   try {
     const medicines = await Medicine.find();
     res.json(medicines);
@@ -12,7 +13,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.post('/', async (req, res) => {
+router.post('/', protect, pharmacist, async (req, res) => {
   const { name, quantity, expiryDate } = req.body;
 
   const newMedicine = new Medicine({
